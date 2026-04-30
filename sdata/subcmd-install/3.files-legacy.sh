@@ -9,13 +9,11 @@ case "${SKIP_MISCCONF}" in
   true) sleep 0;;
   *)
     for i in $(find dots/.config/ -mindepth 1 -maxdepth 1 ! -name 'quickshell' ! -name 'fish' ! -name 'hypr' ! -name 'fontconfig' -exec basename {} \;); do
-#      i="dots/.config/$i"
       echo "[$0]: Found target: dots/.config/$i"
       if [ -d "dots/.config/$i" ];then install_dir__sync "dots/.config/$i" "$XDG_CONFIG_HOME/$i"
       elif [ -f "dots/.config/$i" ];then install_file "dots/.config/$i" "$XDG_CONFIG_HOME/$i"
       fi
     done
-    install_dir "dots/.local/share/konsole" "${XDG_DATA_HOME}"/konsole
     ;;
 esac
 
@@ -43,20 +41,22 @@ case "${SKIP_FONTCONFIG}" in
     esac;;
 esac
 
-# For Hyprland
+# For Hyprland (consolidated structure)
 case "${SKIP_HYPRLAND}" in
   true) sleep 0;;
   *)
-    install_dir__sync dots/.config/hypr/hyprland "$XDG_CONFIG_HOME"/hypr/hyprland
-    for i in hyprlock.conf {monitors,workspaces}.conf ; do
-      install_file__auto_backup "dots/.config/hypr/$i" "${XDG_CONFIG_HOME}/hypr/$i"
-    done
+    # Install the entire hypr directory (includes scripts, hyprland.conf, hypridle.conf, hyprlock.conf)
+    install_dir__sync dots/.config/hypr "$XDG_CONFIG_HOME"/hypr
+
+    # Handle hyprland.conf specially (always overwrite, no backup)
     for i in hyprland.conf ; do
       case "${SKIP_HYPRLAND_ENTRY}" in
         true) sleep 0;;
         *) install_file "dots/.config/hypr/$i" "${XDG_CONFIG_HOME}/hypr/$i" ;;
       esac
     done
+
+    # hypridle.conf gets backup treatment
     for i in hypridle.conf ; do
       if [[ "${INSTALL_VIA_NIX}" == true ]]; then
         install_file__auto_backup "dots-extra/via-nix/$i" "${XDG_CONFIG_HOME}/hypr/$i"
@@ -64,11 +64,9 @@ case "${SKIP_HYPRLAND}" in
         install_file__auto_backup "dots/.config/hypr/$i" "${XDG_CONFIG_HOME}/hypr/$i"
       fi
     done
-    if [ "$OS_GROUP_ID" = "fedora" ];then
-      v bash -c "printf \"# For fedora to setup polkit\nexec-once = /usr/libexec/kf6/polkit-kde-authentication-agent-1\n\" >> ${XDG_CONFIG_HOME}/hypr/hyprland/execs.conf"
-    fi
 
-    install_dir__ignore_existing "dots/.config/hypr/custom" "${XDG_CONFIG_HOME}/hypr/custom"
+    # hyprlock.conf gets backup treatment
+    install_file__auto_backup "dots/.config/hypr/hyprlock.conf" "${XDG_CONFIG_HOME}/hypr/hyprlock.conf"
     ;;
 esac
 
