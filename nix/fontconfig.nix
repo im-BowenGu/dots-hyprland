@@ -9,5 +9,5 @@
     };
   };
 
-  xdg.configFile."fontconfig/fonts.conf".source = ../dots/.config/fontconfig/fonts.conf;
+  xdg.configFile."fontconfig/fonts.conf".source = ./dotfiles/fontconfig/fonts.conf;
 }

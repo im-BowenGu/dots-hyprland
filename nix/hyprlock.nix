@@ -26,7 +26,6 @@
 
       label = [
         {
-          # Layout
           text = ''cmd[update:1000] hyprctl devices -j | jq -r '.keyboards[] | select(.main == true) | .active_keymap' | head -n 1'';
           color = "rgba(d9e2ffFF)";
           font_size = 14;
@@ -36,8 +35,7 @@
           valign = "bottom";
         }
         {
-          # Caps Lock
-          text = "cmd[update:250] ${config.xdg.configHome}/hypr/hyprlock/check-capslock.sh";
+          text = "cmd[update:250] $HOME/.config/hypr/hyprlock/check-capslock.sh";
           color = "rgba(d9e2ffFF)";
           font_size = 13;
           font_family = "Google Sans Flex Medium";
@@ -46,7 +44,6 @@
           valign = "center";
         }
         {
-          # Clock
           text = ''cmd[update:1000] echo "$(date +"%H:%M")"'';
           color = "rgba(d9e2ffFF)";
           font_size = 65;
@@ -56,7 +53,6 @@
           valign = "center";
         }
         {
-          # Date
           text = "cmd[update:5000] date +\"%A, %B %d\"";
           color = "rgba(d9e2ffFF)";
           font_size = 17;
@@ -66,7 +62,6 @@
           valign = "center";
         }
         {
-          # User
           text = "    $USER";
           color = "rgba(d9e2ffFF)";
           font_size = 20;
@@ -76,8 +71,7 @@
           valign = "bottom";
         }
         {
-          # Status
-          text = "cmd[update:5000] ${config.xdg.configHome}/hypr/hyprlock/status.sh";
+          text = "cmd[update:5000] $HOME/.config/hypr/hyprlock/status.sh";
           color = "rgba(d9e2ffFF)";
           font_size = 14;
           font_family = "Google Sans Flex Medium";

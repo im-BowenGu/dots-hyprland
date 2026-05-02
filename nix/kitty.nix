@@ -11,7 +11,7 @@
       window_margin_width = 21.75;
       confirm_os_window_close = 0;
       shell = "bash";
-      include = "~/.local/state/quickshell/user/generated/terminal/kitty-theme.conf";
+#      include = "~/.local/state/quickshell/user/generated/terminal/kitty-theme.conf";
     };
 
     extraConfig = ''

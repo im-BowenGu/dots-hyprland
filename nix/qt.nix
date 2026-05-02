@@ -6,33 +6,33 @@
     platformTheme.name = "kde";
     style = {
       name = "kvantum";
-      package = pkgs.kvantum;
+      package = pkgs.kdePackages.qtstyleplugin-kvantum;
     };
   };
 
   xdg.configFile."Kvantum/kvantum.kvconfig" = {
-    source = ../dots/.config/Kvantum/kvantum.kvconfig;
+    source = ./dotfiles/Kvantum/kvantum.kvconfig;
   };
 
   xdg.configFile."Kvantum/Colloid" = {
-    source = ../dots/.config/Kvantum/Colloid;
+    source = ./dotfiles/Kvantum/Colloid;
     recursive = true;
   };
 
   xdg.configFile."Kvantum/MaterialAdw" = {
-    source = ../dots/.config/Kvantum/MaterialAdw;
+    source = ./dotfiles/Kvantum/MaterialAdw;
     recursive = true;
   };
 
   xdg.configFile."kdeglobals" = {
-    source = ../dots/.config/kdeglobals;
+    source = ./dotfiles/kdeglobals;
   };
 
   xdg.configFile."darklyrc" = {
-    source = ../dots/.config/darklyrc;
+    source = ./dotfiles/darklyrc;
   };
 
   xdg.configFile."dolphinrc" = {
-    source = ../dots/.config/dolphinrc;
+    source = ./dotfiles/dolphinrc;
   };
 }

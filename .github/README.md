@@ -1,88 +1,131 @@
-# Illogical Impulse Hyprland Dotfiles
+# dots-hyprland
 
-An opinionated no-nonsense fork of [end-4/dots-hyprland](https://github.com/end-4/dots-hyprland).
+A modular NixOS configuration for Hyprland-based desktop environments with Quickshell as the UI framework.
 
-## Overview
+## Features
 
-### What this is
+- **Hyprland** - Dynamic tiling Wayland compositor
+- **Quickshell (ii config)** - Custom shell with panels, widgets, and settings
+- **Awww** - Animated wallpaper daemon (formerly swww)
+- **Matugen** - Material Design 3 color generation from wallpapers
+- **Fuzzel** - Application launcher
+- **Kitty** - GPU-accelerated terminal
+- **Starship** - Cross-shell prompt
+- **Hyprlock** - Wayland screen locker
+- **Hypridle** - Idle management
+- **Wlogout** - Logout utility
 
-- Configuration files for a Hyprland-based desktop environment
-- Custom graphical shell built with Quickshell (QtQuick)
-- Material You color theming driven by wallpaper
-- Arch Linux focused (other distros unsupported in this fork)
+## Nix Module Structure
 
-### What this is not
+```
+nix/
+├── main.nix           # Main entry point importing all modules
+├── default.nix        # Home-manager config with packages and dotfiles
+├── hyprland.nix       # Hyprland window manager configuration
+├── hyprlock.nix       # Screen locker configuration
+├── hypridle.nix       # Idle management
+├── quickshell/        # Quickshell ii configuration
+├── scripts/           # Utility scripts (wallpaper, emoji, etc.)
+├── fuzzel.nix         # Application launcher
+├── kitty.nix          # Terminal configuration
+├── starship.nix       # Shell prompt
+├── matugen.nix        # Color generation
+├── fontconfig.nix     # Font configuration
+├── qt.nix             # Qt theming
+├── mpv.nix            # Media player
+├── wlogout.nix        # Logout menu
+├── xdg.nix            # XDG configuration
+└── deps.nix           # Dependencies
+```
 
-- A full system setup script (no driver config, no swap/zram, etc.)
-- A beginner-friendly experience
-- Supported on distributions other than Arch Linux
+## Key Bindings
 
-## Notable Features
+| Keybinding | Action |
+|------------|--------|
+| `SUPER + Return` | Open Kitty terminal |
+| `SUPER + B` | Open Librewolf browser |
+| `SUPER + E` | Open Dolphin file manager |
+| `SUPER + CTRL + Return` | Launch Fuzzel |
+| `SUPER + Q` | Close active window |
+| `SUPER + F` | Toggle fullscreen |
+| `SUPER + T` | Toggle floating |
+| `SUPER + V` | Clipboard history (cliphist) |
+| `SUPER + SHIFT + W` | Random wallpaper (waypaper) |
+| `SUPER + SHIFT + Q` | Logout (wlogout) |
 
-- **Overview**: Open apps with live previews
-- **QoL**: Screen translation, anti-flashbang, Google Lens
-- **Material themes**: Set your wallpaper, colors adapt automatically
-- **Consolidated config**: Hyprland configuration in a single file
+## Autostart Services
+
+- `hyprpolkitagent` - Policy agent
+- `fcitx5` - Input method
+- `awww-daemon` - Wallpaper daemon
+- `qs -c ii` - Quickshell with ii config
+- `wl-paste --watch cliphist store` - Clipboard manager
+
+## Security
+
+- **Doas** - Primary privilege escalation (sudo shim enabled)
+- **Fprintd** - Fingerprint authentication for login and sudo
+
+## Requirements
+
+- Hyprland (Wayland compositor)
+- Quickshell (from flake input or AUR)
+- Awww (formerly swww)
+- Matugen
+- Fuzzel
+- Kitty
+- Home Manager (for Nix)
 
 ## Installation
 
-Run `./setup install` from the repository root.
+### Arch Linux
 
-Keybinds should feel familiar to Windows or GNOME users. Important ones:
+1. Install dependencies:
+   ```bash
+   sudo pacman -S hyprland fuzzel kitty starship hyprlock hypridle wlogout mpv
+   yay -S quickshell-git awww-git matugen-bin
+   ```
 
-- `Super`+`/` = keybind list
-- `Super`+`Enter` = terminal
-- `Super`+`Tab` = overview
+2. Copy dotfiles to your home directory:
+   ```bash
+   cp -r dots/.config/* ~/.config/
+   cp dots/.bashrc ~/
+   ```
 
-## Software
+3. Start services:
+   ```bash
+   awww-daemon &
+   qs -c ii &
+   ```
 
-| Software | Purpose |
-|----------|---------|
-| [Hyprland](https://github.com/hyprwm/hyprland) | Compositor |
-| [Quickshell](https://quickshell.outfoxxed.me/) | Status bar, sidebars, overview, and other widgets |
-| [Kitty](https://github.com/kovidgoyal/kitty) | Terminal emulator |
-| [Fuzzel](https://codeberg.org/dnkl/fuzzel) | Launcher (fallback) |
+### NixOS
 
-Full dependency list: [deps-info.md](sdata/deps-info.md)
+1. Add quickshell flake input to your `flake.nix`:
+   ```nix
+   inputs.quickshell = {
+     url = "git+https://git.outfoxxed.me/quickshell/quickshell";
+     inputs.nixpkgs.follows = "nixpkgs";
+   };
+   ```
 
-## Nix Configuration
+2. Copy nix module files to your NixOS config:
+   ```bash
+   cp -r nix/*.nix /etc/nixos/modules/desktop/dots/
+   cp -r nix/scripts/ /etc/nixos/modules/desktop/dots/scripts/
+   ```
 
-A Nix-based configuration is provided in `nix/`. Import `nix/main.nix` into your Home Manager configuration.
+3. Import the module in your `configuration.nix`:
+   ```nix
+   imports = [
+     ./modules/desktop/default.nix
+   ];
+   ```
 
-## Directory Structure
-
-```
-.
-├── dots/                      # Configuration files deployed to ~/.config
-│   ├── .config/
-│   │   ├── hypr/              # Hyprland (single consolidated config)
-│   │   │   ├── hyprland.conf
-│   │   │   ├── hypridle.conf
-│   │   │   ├── hyprlock.conf
-│   │   │   ├── scripts/       # Shell scripts
-│   │   │   └── hyprlock/      # Hyprlock helper scripts
-│   │   ├── kitty/             # Terminal config
-│   │   ├── quickshell/ii/     # Quickshell widget system
-│   │   ├── fuzzel/            # Launcher config
-│   │   ├── matugen/           # Color generation templates
-│   │   └── ...                # Other app configs
-│   └── .local/
-├── dots-extra/                # Optional modules (fontsets, etc.)
-├── nix/                       # Home Manager Nix modules
-│   ├── main.nix               # Entry point
-│   └── ...                    # One file per config
-└── sdata/                     # Setup scripts and distro-specific installers
-```
-
-## Previous Styles
-
-- **illogical-impulse (Quickshell)**: Current, supported
-- **illogical-impulse (AGS)**: `ii-ags` branch, unsupported
-- **m3ww (EWW)**: `archive` branch, unsupported
-- **NovelKnock (EWW)**: `archive` branch, unsupported
-- **Hybrid (EWW)**: `archive` branch, unsupported
-- **Windoes (EWW)**: `archive` branch, unsupported
+4. Rebuild your system:
+   ```bash
+   nixos-rebuild switch --flake /etc/nixos#secret-star
+   ```
 
 ## License
 
-See [LICENSE](LICENSE)
+MIT

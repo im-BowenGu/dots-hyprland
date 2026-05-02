@@ -2,6 +2,7 @@
 
 {
   imports = [
+    ./deps.nix
     ./bash.nix
     ./fontconfig.nix
     ./fuzzel.nix
